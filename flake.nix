@@ -7,74 +7,62 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
-        };
-      vscode-server.url = "github:nix-community/nixos-vscode-server";
+    };
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
 
   };
 
   outputs = inputs: {
+
+
     nixosConfigurations = {
-      main = inputs.nixpkgs.lib.nixosSystem{
+      main = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           inputs.home-manager.nixosModules.default
           inputs.vscode-server.nixosModules.default
           inputs.nixos-wsl.nixosModules.default
-          ({pkgs, ...}:{
-	        environment.systemPackages = [pkgs.wget];
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.teak = {
-		
-                home =  {
-                  username = "teak";
-                  homeDirectory = "/home/teak";
-                  stateVersion = "23.11";
-                  packages = [
-                      pkgs.wget
-                      pkgs.coreutils
-                      pkgs.git
-                  ];
+          ({ pkgs, ... }: {
+            environment.systemPackages = [ pkgs.wget ];
 
-                };
-                programs.git = {
-                    enable = true;
-                    userEmail = "Ansh-Sonkusare"; 
-                    userName = "sonkusare.satish12@gmail.com"; 
-                  };
+            nixpkgs.config.allowUnfree = true;
 
-                programs.zsh = {
-                  enable = true;
-                  oh-my-zsh = {
-                        enable = true;
-                        plugins = [ "git" ];
-                        theme = "bira";
-                  };
-                };
-                
-                programs.home-manager.enable = true;
-                
-                services.ssh-agent.enable = true;
-
-            };
-};
+            fonts.packages = with pkgs; [
+              noto-fonts
+              noto-fonts-cjk
+              noto-fonts-emoji
+              liberation_ttf
+              fira-code
+              fira-code-symbols
+              mplus-outline-fonts.githubRelease
+              dina-font
+              proggyfonts
+            ];
+            home-manager = import ./home.nix { inherit pkgs; };
             networking.hostName = "nixos";
             system.stateVersion = "23.11";
-	          programs.zsh.enable = true;
+            programs.zsh.enable = true;
+
             users = {
               users.teak = {
-		            shell = pkgs.zsh;
+                shell = pkgs.zsh;
                 isNormalUser = true;
-                extraGroups = ["wheel"];
+                extraGroups = [ "wheel" "docker" ];
               };
             };
-	          services.vscode-server.enable = true;
+            virtualisation.docker = {
+              enable = true;
+              enableOnBoot = true;
+              autoPrune.enable = true;
+            };
+
+            services.vscode-server.enable = true;
             wsl = {
-                enable = true;
-                defaultUser = "teak";
-                wslConf.user.default = "teak";
-		          };
+              enable = true;
+              defaultUser = "teak";
+              docker-desktop.enable = true;
+              wslConf.user.default = "teak";
+            };
           })
         ];
       };
