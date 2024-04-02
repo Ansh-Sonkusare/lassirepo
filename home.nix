@@ -18,6 +18,7 @@
         nodePackages.pnpm
         graphite-cli
         gh
+        bun
         nil
         home-manager
       ];
