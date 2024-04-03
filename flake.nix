@@ -24,9 +24,7 @@
           inputs.nixos-wsl.nixosModules.default
           ({ pkgs, ... }: {
             environment.systemPackages = [ pkgs.wget ];
-
             nixpkgs.config.allowUnfree = true;
-
             fonts.packages = with pkgs; [
               noto-fonts
               noto-fonts-cjk
@@ -55,7 +53,6 @@
               enableOnBoot = true;
               autoPrune.enable = true;
             };
-
             services.vscode-server.enable = true;
             wsl = {
               enable = true;
@@ -66,6 +63,7 @@
           })
         ];
       };
+
     };
 
   };

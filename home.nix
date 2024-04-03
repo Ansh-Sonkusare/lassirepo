@@ -5,8 +5,6 @@
   users.teak = {
 
     home = {
-
-
       username = "teak";
       homeDirectory = "/home/teak";
       stateVersion = "23.11";
@@ -37,7 +35,6 @@
     };
     programs.starship = {
       enable = true;
-      # Configuration written to ~/.config/starship.toml
       settings = {
         add_newline = false;
 
