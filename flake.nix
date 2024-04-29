@@ -22,9 +22,18 @@
           inputs.home-manager.nixosModules.default
           inputs.vscode-server.nixosModules.default
           inputs.nixos-wsl.nixosModules.default
-          ({ pkgs, ... }: {
-            environment.systemPackages = [ pkgs.wget ];
+
+          ({ pkgs, lib, ... }: {
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            services.vscode-server.enable = true;
+            environment.systemPackages = [
+              pkgs.wget
+              pkgs.tailscale
+            ];
             nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.permittedInsecurePackages = [
+              "python-2.7.18.7"
+            ];
             fonts.packages = with pkgs; [
               noto-fonts
               noto-fonts-cjk
@@ -36,10 +45,13 @@
               dina-font
               proggyfonts
             ];
+
             home-manager = import ./home.nix { inherit pkgs; };
             networking.hostName = "nixos";
             system.stateVersion = "23.11";
             programs.zsh.enable = true;
+            programs.nix-ld.enable = true;
+
 
             users = {
               users.teak = {
@@ -53,12 +65,33 @@
               enableOnBoot = true;
               autoPrune.enable = true;
             };
-            services.vscode-server.enable = true;
+
+            services.tailscale.enable = true;
+
+
             wsl = {
               enable = true;
               defaultUser = "teak";
-              docker-desktop.enable = true;
+              wslConf.automount.root = "/mnt";
+              wslConf.interop.appendWindowsPath = false;
+              wslConf.network.generateHosts = false;
+
+              startMenuLaunchers = true;
+
+
+              docker-desktop.enable = false;
               wslConf.user.default = "teak";
+              extraBin = with pkgs; [
+                # Binaries for Docker Desktop wsl-distro-proxy
+                { src = "${coreutils}/bin/mkdir"; }
+                { src = "${coreutils}/bin/cat"; }
+                { src = "${coreutils}/bin/whoami"; }
+                { src = "${coreutils}/bin/ls"; }
+                { src = "${busybox}/bin/addgroup"; }
+                { src = "${su}/bin/groupadd"; }
+                { src = "${su}/bin/usermod"; }
+              ];
+
             };
           })
         ];

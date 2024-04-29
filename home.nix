@@ -8,17 +8,23 @@
       username = "teak";
       homeDirectory = "/home/teak";
       stateVersion = "23.11";
+
       packages = with pkgs; [
         wget
         coreutils
         git
         nodejs
         nodePackages.pnpm
+        nodePackages."@angular/cli"
+        gcc
+        nodePackages."ts-node"
+        python2
         graphite-cli
         gh
         bun
         nil
         home-manager
+        unrar
       ];
 
 
