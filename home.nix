@@ -16,6 +16,8 @@
         nodejs
         nodePackages.pnpm
         nodePackages."@angular/cli"
+        nodePackages.prisma
+        openssl
         gcc
         nodePackages."ts-node"
         python2
