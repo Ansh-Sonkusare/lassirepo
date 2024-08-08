@@ -1,7 +1,5 @@
 {
-
   inputs = {
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     home-manager = {
@@ -9,12 +7,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vscode-server.url = "github:nix-community/nixos-vscode-server";
-
   };
 
   outputs = inputs: {
-
-
     nixosConfigurations = {
       main = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -23,7 +18,10 @@
           inputs.vscode-server.nixosModules.default
           inputs.nixos-wsl.nixosModules.default
 
-          ({ pkgs, lib, ... }: {
+          ({ pkgs
+           , lib
+           , ...
+           }: {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             services.vscode-server.enable = true;
             environment.systemPackages = [
@@ -52,7 +50,6 @@
             programs.zsh.enable = true;
             programs.nix-ld.enable = true;
 
-
             users = {
               users.teak = {
                 shell = pkgs.zsh;
@@ -68,7 +65,6 @@
 
             services.tailscale.enable = true;
 
-
             wsl = {
               enable = true;
               defaultUser = "teak";
@@ -77,7 +73,6 @@
               wslConf.network.generateHosts = false;
 
               startMenuLaunchers = true;
-
 
               docker-desktop.enable = false;
               wslConf.user.default = "teak";
@@ -91,14 +86,10 @@
                 { src = "${su}/bin/groupadd"; }
                 { src = "${su}/bin/usermod"; }
               ];
-
             };
           })
         ];
       };
-
     };
-
   };
-
 }

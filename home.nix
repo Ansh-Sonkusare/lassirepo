@@ -1,9 +1,7 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   useGlobalPkgs = true;
   useUserPackages = true;
   users.teak = {
-
     home = {
       username = "teak";
       homeDirectory = "/home/teak";
@@ -21,15 +19,14 @@
         gcc
         nodePackages."ts-node"
         python2
-        graphite-cli
+
         gh
         bun
+        alejandra
         nil
         home-manager
         unrar
       ];
-
-
     };
     programs.git = {
       enable = true;
@@ -60,7 +57,6 @@
     };
 
     programs.zsh = {
-
       enable = true;
       autocd = true;
       enableAutosuggestions = true;
@@ -96,10 +92,8 @@
       shellAliases = {
         cd = "z";
       };
-
     };
     programs.home-manager.enable = true;
     services.ssh-agent.enable = true;
-
   };
 }
