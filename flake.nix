@@ -27,6 +27,8 @@
             environment.systemPackages = [
               pkgs.wget
               pkgs.tailscale
+              pkgs.kubectl
+                  pkgs.graphite-cli
             ];
             nixpkgs.config.allowUnfree = true;
             nixpkgs.config.permittedInsecurePackages = [
