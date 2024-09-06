@@ -11,7 +11,7 @@
 
   outputs = inputs: {
     nixosConfigurations = {
-      main = inputs.nixpkgs.lib.nixosSystem {
+      nixos = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           inputs.home-manager.nixosModules.default
@@ -28,6 +28,9 @@
               pkgs.wget
               pkgs.tailscale
               pkgs.kubectl
+              pkgs.neovim
+
+              pkgs.nodePackages_latest.prisma
                   pkgs.graphite-cli
             ];
             nixpkgs.config.allowUnfree = true;
@@ -45,7 +48,9 @@
               dina-font
               proggyfonts
             ];
-
+            environment.variables.PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+              environment.variables.PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
+              environment.variables.PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
             home-manager = import ./home.nix { inherit pkgs; };
             networking.hostName = "nixos";
             system.stateVersion = "23.11";
