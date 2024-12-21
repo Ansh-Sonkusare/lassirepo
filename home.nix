@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   useGlobalPkgs = true;
   useUserPackages = true;
   users.teak = {
@@ -8,24 +8,19 @@
       stateVersion = "23.11";
 
       packages = with pkgs; [
+        gnumake
         wget
         coreutils
         git
-        nodejs
-        nodePackages.pnpm
-        nodePackages."@angular/cli"
-        nodePackages.prisma
         openssl
         gcc
-        nodePackages."ts-node"
-        python2
-
+        neovim
         gh
-        bun
         alejandra
         nil
         home-manager
         unrar
+        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       ];
     };
     programs.git = {
@@ -36,6 +31,12 @@
         ci = "commit";
         co = "checkout";
         s = "status";
+      };
+    };
+    xdg.configFile = {
+      "nvim" = {
+        source = ./nvim;
+        recursive = true;
       };
     };
     programs.starship = {
@@ -70,7 +71,7 @@
       historySubstringSearch.enable = true;
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" ];
+        plugins = ["git"];
         theme = "bira";
       };
       plugins = [
@@ -93,6 +94,8 @@
         cd = "z";
       };
     };
+    
+  fonts.fontconfig.enable = true;
     programs.home-manager.enable = true;
     services.ssh-agent.enable = true;
   };

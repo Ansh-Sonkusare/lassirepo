@@ -18,25 +18,23 @@
           inputs.vscode-server.nixosModules.default
           inputs.nixos-wsl.nixosModules.default
 
-          ({ pkgs
-           , lib
-           , ...
-           }: {
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          ({
+            pkgs,
+            lib,
+            ...
+          }: {
+            nix.settings.experimental-features = ["nix-command" "flakes"];
             services.vscode-server.enable = true;
             environment.systemPackages = [
               pkgs.wget
               pkgs.tailscale
               pkgs.kubectl
               pkgs.neovim
-
               pkgs.nodePackages_latest.prisma
-                  pkgs.graphite-cli
+              pkgs.graphite-cli
             ];
             nixpkgs.config.allowUnfree = true;
-            nixpkgs.config.permittedInsecurePackages = [
-              "python-2.7.18.7"
-            ];
+
             fonts.packages = with pkgs; [
               noto-fonts
               noto-fonts-cjk
@@ -48,10 +46,15 @@
               dina-font
               proggyfonts
             ];
-            environment.variables.PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
-              environment.variables.PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
-              environment.variables.PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
-            home-manager = import ./home.nix { inherit pkgs; };
+
+            # Prisma:
+            environment.variables = {
+              PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+              PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
+              PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
+              PRISMA_TMP_DIR = "/tmp/prisma"; # Ensure this directory is writable
+            };
+            home-manager = import ./home.nix {inherit pkgs;};
             networking.hostName = "nixos";
             system.stateVersion = "23.11";
             programs.zsh.enable = true;
@@ -61,7 +64,7 @@
               users.teak = {
                 shell = pkgs.zsh;
                 isNormalUser = true;
-                extraGroups = [ "wheel" "docker" ];
+                extraGroups = ["wheel" "docker"];
               };
             };
             virtualisation.docker = {
@@ -85,13 +88,13 @@
               wslConf.user.default = "teak";
               extraBin = with pkgs; [
                 # Binaries for Docker Desktop wsl-distro-proxy
-                { src = "${coreutils}/bin/mkdir"; }
-                { src = "${coreutils}/bin/cat"; }
-                { src = "${coreutils}/bin/whoami"; }
-                { src = "${coreutils}/bin/ls"; }
-                { src = "${busybox}/bin/addgroup"; }
-                { src = "${su}/bin/groupadd"; }
-                { src = "${su}/bin/usermod"; }
+                {src = "${coreutils}/bin/mkdir";}
+                {src = "${coreutils}/bin/cat";}
+                {src = "${coreutils}/bin/whoami";}
+                {src = "${coreutils}/bin/ls";}
+                {src = "${busybox}/bin/addgroup";}
+                {src = "${su}/bin/groupadd";}
+                {src = "${su}/bin/usermod";}
               ];
             };
           })
