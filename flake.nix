@@ -1,18 +1,25 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixos-wsl.url = "github:nix-community/NixOS-WSL";
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     vscode-server.url = "github:nix-community/nixos-vscode-server";
   };
 
-  outputs = inputs: {
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  } @ inputs: {
+    # <-- this ensures inputs is passed to the function
     nixosConfigurations = {
       nixos = inputs.nixpkgs.lib.nixosSystem {
+        # now inputs is properly passed
         system = "x86_64-linux";
+        specialArgs = {inherit inputs;};
         modules = [
           inputs.home-manager.nixosModules.default
           inputs.vscode-server.nixosModules.default
@@ -21,23 +28,22 @@
           ({
             pkgs,
             lib,
-            ...
+            ... # ensure this part is properly scoped
           }: {
             nix.settings.experimental-features = ["nix-command" "flakes"];
             services.vscode-server.enable = true;
+
             environment.systemPackages = [
               pkgs.wget
               pkgs.tailscale
               pkgs.kubectl
-              pkgs.neovim
               pkgs.nodePackages_latest.prisma
               pkgs.graphite-cli
             ];
             nixpkgs.config.allowUnfree = true;
-
             fonts.packages = with pkgs; [
               noto-fonts
-              noto-fonts-cjk
+              noto-fonts-cjk-sans
               noto-fonts-emoji
               liberation_ttf
               fira-code
@@ -56,7 +62,7 @@
             };
             home-manager = import ./home.nix {inherit pkgs;};
             networking.hostName = "nixos";
-            system.stateVersion = "23.11";
+            system.stateVersion = "24.11";
             programs.zsh.enable = true;
             programs.nix-ld.enable = true;
 

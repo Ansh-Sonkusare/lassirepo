@@ -5,8 +5,8 @@
     home = {
       username = "teak";
       homeDirectory = "/home/teak";
-      stateVersion = "23.11";
-
+      stateVersion = "24.11";
+      sessionPath = [ "$HOME/.local/bin" ];
       packages = with pkgs; [
         gnumake
         wget
@@ -14,15 +14,18 @@
         git
         openssl
         gcc
-        neovim
         gh
+        lua
         alejandra
         nil
+        nerdfonts
         home-manager
         unrar
-        (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-      ];
-    };
+        fira-code
+        fira-code-symbols
+];
+
+};
     programs.git = {
       enable = true;
       userName = "Ansh-Sonkusare";
@@ -33,11 +36,15 @@
         s = "status";
       };
     };
-    xdg.configFile = {
-      "nvim" = {
-        source = ./nvim;
-        recursive = true;
-      };
+    programs.tmux = {
+      enable = true;
+      plugins = with pkgs.tmuxPlugins; [ catppuccin ];
+      baseIndex = 1;
+      # keyMode = "vi";
+    };
+    programs.neovim = {
+      enable = true;
+      defaultEditor = true;
     };
     programs.starship = {
       enable = true;
@@ -57,6 +64,7 @@
       enableZshIntegration = true;
     };
 
+    programs.direnv.enable = true;
     programs.zsh = {
       enable = true;
       autocd = true;
@@ -93,9 +101,14 @@
       shellAliases = {
         cd = "z";
       };
+     sessionVariables = {
+     NVIM_APPNAME="nvim-chad"; 
+
+     };
+      
     };
-    
-  fonts.fontconfig.enable = true;
+
+    fonts.fontconfig.enable = true;
     programs.home-manager.enable = true;
     services.ssh-agent.enable = true;
   };
