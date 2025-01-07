@@ -1,4 +1,31 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  plug = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-sessionx";
+    version = "unstable-2024-05-15";
+    src = pkgs.fetchFromGitHub {
+      owner = "omerxx";
+      repo = "tmux-sessionx";
+      rev = "4f58ca79b1c6292c20182ab2fce2b1f2cb39fb9b";
+      hash = "sha256-/fmcgFxu2ndJXYNJ3803arcecinYIajPI+1cTcuFVo0=";
+    };
+    postInstall = ''
+      echo "teak" '';
+  };
+
+  catppuccin = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "catppuccin";
+    version = "unstable-2024-05-15";
+    src = pkgs.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "tmux";
+      rev = "697087f593dae0163e01becf483b192894e69e33";
+      hash = "sha256-EHinWa6Zbpumu+ciwcMo6JIIvYFfWWEKH1lwfyZUNTo=";
+    };
+    postInstall = ''
+      sed -i -e 's|''${PLUGIN_DIR}/catppuccin-selected-theme.tmuxtheme|''${TMUX_TMPDIR}/catppuccin-selected-theme.tmuxtheme|g' $target/catppuccin.tmux
+    '';
+  };
+in {
   useGlobalPkgs = true;
   useUserPackages = true;
   users.teak = {
@@ -6,7 +33,7 @@
       username = "teak";
       homeDirectory = "/home/teak";
       stateVersion = "24.11";
-      sessionPath = [ "$HOME/.local/bin" ];
+      sessionPath = ["$HOME/.local/bin"];
       packages = with pkgs; [
         gnumake
         wget
@@ -19,13 +46,14 @@
         alejandra
         nil
         nerdfonts
-        home-manager
         unrar
+        fzf
+        bat
+        ripgrep
         fira-code
         fira-code-symbols
-];
-
-};
+      ];
+    };
     programs.git = {
       enable = true;
       userName = "Ansh-Sonkusare";
@@ -38,8 +66,12 @@
     };
     programs.tmux = {
       enable = true;
-      plugins = with pkgs.tmuxPlugins; [ catppuccin ];
+      plugins = [plug catppuccin];
       baseIndex = 1;
+      extraConfig = ''
+        set -g @sessionx-bind 'o'
+
+      '';
       # keyMode = "vi";
     };
     programs.neovim = {
@@ -100,12 +132,11 @@
       ];
       shellAliases = {
         cd = "z";
+        code = "/mnt/c/Users/sonku/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
       };
-     sessionVariables = {
-     NVIM_APPNAME="nvim-chad"; 
-
-     };
-      
+      sessionVariables = {
+        NVIM_APPNAME = "nvim-chad";
+      };
     };
 
     fonts.fontconfig.enable = true;
