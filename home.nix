@@ -131,6 +131,7 @@ in {
         }
       ];
       shellAliases = {
+        k = "kubectl";
         cd = "z";
         code = "/mnt/c/Users/sonku/AppData/Local/Programs/'Microsoft VS Code'/bin/code";
       };
